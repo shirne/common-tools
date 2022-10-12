@@ -36,6 +36,7 @@ namespace ConfigWindow
             this.displayListBtn = new System.Windows.Forms.Button();
             this.windowList = new System.Windows.Forms.TreeView();
             this.windowListBtn = new System.Windows.Forms.Button();
+            this.reloadBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // configList
@@ -98,11 +99,22 @@ namespace ConfigWindow
             this.windowListBtn.UseVisualStyleBackColor = true;
             this.windowListBtn.Click += new System.EventHandler(this.windowListBtn_Click);
             // 
+            // reloadBtn
+            // 
+            this.reloadBtn.Location = new System.Drawing.Point(85, 19);
+            this.reloadBtn.Name = "reloadBtn";
+            this.reloadBtn.Size = new System.Drawing.Size(75, 23);
+            this.reloadBtn.TabIndex = 7;
+            this.reloadBtn.Text = "重新加载配置";
+            this.reloadBtn.UseVisualStyleBackColor = true;
+            this.reloadBtn.Click += new System.EventHandler(this.reloadBtn_Click);
+            // 
             // SetWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.reloadBtn);
             this.Controls.Add(this.windowListBtn);
             this.Controls.Add(this.windowList);
             this.Controls.Add(this.displayListBtn);
@@ -126,6 +138,7 @@ namespace ConfigWindow
         private System.Windows.Forms.Button displayListBtn;
         private System.Windows.Forms.TreeView windowList;
         private System.Windows.Forms.Button windowListBtn;
+        private System.Windows.Forms.Button reloadBtn;
     }
 }
 

@@ -34,6 +34,7 @@ namespace ConfigWindow
             {
                 doc.Load(configFile);
             }
+            configList.Nodes.Clear();
             config = new XmlConfig();
             var nodes = doc.SelectNodes("configs/item");
             foreach (XmlNode node in nodes)
@@ -148,8 +149,14 @@ namespace ConfigWindow
                 node.Nodes.Add("Y:" + screen.Bounds.Y);
                 node.Nodes.Add("Width:" + screen.Bounds.Width);
                 node.Nodes.Add("Height:" + screen.Bounds.Height);
+                node.Expand();
                 displayList.Nodes.Add(node);
             }
+        }
+
+        private void reloadBtn_Click(object sender, EventArgs e)
+        {
+            loadConfigs();
         }
     }
 }
