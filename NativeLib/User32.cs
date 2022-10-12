@@ -11,7 +11,7 @@ namespace NativeLib
     public delegate bool EnumWindowsProc(IntPtr hWnd, int lParam);
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public  struct RECT
+    public struct RECT
     {
         public int Left;
         public int Top;
@@ -26,7 +26,7 @@ namespace NativeLib
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public  struct WINDOWINFO
+    public struct WINDOWINFO
     {
         public uint cbSize;
         public RECT rcWindow;
@@ -100,7 +100,7 @@ namespace NativeLib
         public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, int lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool GetWindowInfo(IntPtr hWnd,ref WINDOWINFO pwi);
+        public static extern bool GetWindowInfo(IntPtr hWnd, ref WINDOWINFO pwi);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowTextLength(IntPtr hWnd);
@@ -113,9 +113,9 @@ namespace NativeLib
 
         public static string GetWindowTitle(IntPtr hWnd)
         {
-           var len = GetWindowTextLength(hWnd) ;
+            var len = GetWindowTextLength(hWnd);
             StringBuilder title = new StringBuilder(len + 1);
-            GetWindowText(hWnd, title, len);
+            GetWindowText(hWnd, title, len + 1);
             return title.ToString();
         }
 
