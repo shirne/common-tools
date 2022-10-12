@@ -32,6 +32,10 @@ namespace ConfigWindow
             this.configList = new System.Windows.Forms.TreeView();
             this.label1 = new System.Windows.Forms.Label();
             this.SetWindowBtn = new System.Windows.Forms.Button();
+            this.displayList = new System.Windows.Forms.TreeView();
+            this.displayListBtn = new System.Windows.Forms.Button();
+            this.windowList = new System.Windows.Forms.TreeView();
+            this.windowListBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // configList
@@ -60,11 +64,49 @@ namespace ConfigWindow
             this.SetWindowBtn.UseVisualStyleBackColor = true;
             this.SetWindowBtn.Click += new System.EventHandler(this.SetWindowBtn_Click);
             // 
+            // displayList
+            // 
+            this.displayList.Location = new System.Drawing.Point(317, 48);
+            this.displayList.Name = "displayList";
+            this.displayList.Size = new System.Drawing.Size(226, 376);
+            this.displayList.TabIndex = 3;
+            // 
+            // displayListBtn
+            // 
+            this.displayListBtn.Location = new System.Drawing.Point(317, 19);
+            this.displayListBtn.Name = "displayListBtn";
+            this.displayListBtn.Size = new System.Drawing.Size(101, 23);
+            this.displayListBtn.TabIndex = 4;
+            this.displayListBtn.Text = "显示器";
+            this.displayListBtn.UseVisualStyleBackColor = true;
+            this.displayListBtn.Click += new System.EventHandler(this.displayListBtn_Click);
+            // 
+            // windowList
+            // 
+            this.windowList.Location = new System.Drawing.Point(550, 48);
+            this.windowList.Name = "windowList";
+            this.windowList.Size = new System.Drawing.Size(225, 376);
+            this.windowList.TabIndex = 5;
+            // 
+            // windowListBtn
+            // 
+            this.windowListBtn.Location = new System.Drawing.Point(550, 19);
+            this.windowListBtn.Name = "windowListBtn";
+            this.windowListBtn.Size = new System.Drawing.Size(75, 23);
+            this.windowListBtn.TabIndex = 6;
+            this.windowListBtn.Text = "窗口列表";
+            this.windowListBtn.UseVisualStyleBackColor = true;
+            this.windowListBtn.Click += new System.EventHandler(this.windowListBtn_Click);
+            // 
             // SetWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.windowListBtn);
+            this.Controls.Add(this.windowList);
+            this.Controls.Add(this.displayListBtn);
+            this.Controls.Add(this.displayList);
             this.Controls.Add(this.SetWindowBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.configList);
@@ -80,6 +122,10 @@ namespace ConfigWindow
         private System.Windows.Forms.TreeView configList;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button SetWindowBtn;
+        private System.Windows.Forms.TreeView displayList;
+        private System.Windows.Forms.Button displayListBtn;
+        private System.Windows.Forms.TreeView windowList;
+        private System.Windows.Forms.Button windowListBtn;
     }
 }
 

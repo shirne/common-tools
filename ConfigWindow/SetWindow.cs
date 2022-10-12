@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -103,6 +104,52 @@ namespace ConfigWindow
         private string getRect(RECT rect)
         {
             return rect.Left + "," + rect.Top + "/" + rect.Right + "," + rect.Bottom;
+        }
+
+
+        private void windowListBtn_Click(object sender, EventArgs e)
+        {
+            windowList.Nodes.Clear();
+            //LabelStatus.Text = GetWindows().Count.ToString();
+            EnumWindowsProc ewp = new EnumWindowsProc(EnumWindows);
+            User32.EnumWindows(ewp, 0);
+        }
+        private bool EnumWindows(IntPtr win, int lParam)
+        {
+            if (!User32.IsWindowVisible(win))
+            {
+                return true;
+            }
+            WINDOWINFO info = new WINDOWINFO();
+            info.cbSize = (uint)Marshal.SizeOf(info);
+            bool isInfoget = User32.GetWindowInfo(win, ref info);
+            //string title = "00000000000000";
+            StringBuilder title = new StringBuilder(User32.GetWindowTextLength
+                (win) + 1);
+            User32.GetWindowText(win, title, 20);
+            //LabelStatus.Text = LabelStatus.Text+"/" + info.rcWindow.Left.ToString()+","+ info.rcWindow.Top.ToString();
+            uint processId = 0;
+            User32.GetWindowThreadProcessId(win, out processId);
+
+            StringBuilder className = new StringBuilder(100);
+            User32.GetClassName(win, className, 100);
+
+            windowList.Nodes.Add(win.ToInt32().ToString(), Convert.ToInt64(info.atomWindowType).ToString() + "-" + User32.IsWindowVisible(win) + "-" + title.ToString() + "-" + processId.ToString() + "-" + className.ToString());
+            return true;
+        }
+
+        private void displayListBtn_Click(object sender, EventArgs e)
+        {
+            displayList.Nodes.Clear();
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                var node = new TreeNode((screen.Primary?"Primary - ":"")  + screen.DeviceName);
+                node.Nodes.Add("X:" + screen.Bounds.X);
+                node.Nodes.Add("Y:" + screen.Bounds.Y);
+                node.Nodes.Add("Width:" + screen.Bounds.Width);
+                node.Nodes.Add("Height:" + screen.Bounds.Height);
+                displayList.Nodes.Add(node);
+            }
         }
     }
 }
