@@ -110,6 +110,15 @@ namespace NativeLib
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
+        public static string GetWindowTitle(IntPtr hWnd)
+        {
+           var len = GetWindowTextLength(hWnd) ;
+            StringBuilder title = new StringBuilder(len + 1);
+            GetWindowText(hWnd, title, len);
+            return title.ToString();
+        }
+
         [DllImport("user32.dll", EntryPoint = "SetWindowText", CharSet = CharSet.Ansi)]
         public static extern bool SetWindowText(IntPtr hwnd, string lpString);
 

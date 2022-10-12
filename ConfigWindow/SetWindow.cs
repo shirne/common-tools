@@ -14,11 +14,21 @@ namespace ConfigWindow
         XmlConfig config;
         string configFile = "config.xml";
         const string emptyXml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?><configs></configs>";
-        public SetWindow()
+
+        string[] args;
+        public SetWindow(string[] args)
         {
+            this.args = args;
             InitializeComponent();
             configFile = Directory.GetCurrentDirectory() + "/" + configFile;
             loadConfigs();
+            foreach(string arg in args)
+            {
+                if("--apply".Equals(arg))
+                {
+                    DoSetWindow();
+                }
+            }
         }
         private void loadConfigs()
         {
@@ -105,6 +115,10 @@ namespace ConfigWindow
 
         private void SetWindowBtn_Click(object sender, EventArgs e)
         {
+            DoSetWindow();
+        }
+        private void DoSetWindow()
+        {
             configList.Nodes.Clear();
             foreach (ItemConfig item in config.items)
             {
@@ -175,9 +189,7 @@ namespace ConfigWindow
             info.cbSize = (uint)Marshal.SizeOf(info);
             bool isInfoget = User32.GetWindowInfo(win, ref info);
             
-            StringBuilder title = new StringBuilder(User32.GetWindowTextLength
-                (win) + 1);
-            User32.GetWindowText(win, title, 20);
+            string title = User32.GetWindowTitle(win);
 
             uint processId = 0;
             User32.GetWindowThreadProcessId(win, out processId);
@@ -185,7 +197,7 @@ namespace ConfigWindow
             StringBuilder className = new StringBuilder(100);
             User32.GetClassName(win, className, 100);
 
-            var node = new TreeNode(Convert.ToInt64(info.atomWindowType).ToString() + "-" + title.ToString());
+            var node = new TreeNode(Convert.ToInt64(info.atomWindowType).ToString() + "-" + title);
             node.Nodes.Add("Status:" + info.dwWindowStatus.ToString());
             node.Nodes.Add("ProcessId:" + processId.ToString());
             node.Nodes.Add("ClassName:" + className.ToString());

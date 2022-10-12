@@ -26,7 +26,7 @@ namespace ConfigWindow
             InitializeComponent();
         }
 
-        public void fromItem(ItemConfig item, int index=-1)
+        public void fromItem(ItemConfig item, int index = -1)
         {
             this.index = index;
             this.processName = item.processName;
@@ -110,26 +110,32 @@ namespace ConfigWindow
         private void queryBtn_Click(object sender, EventArgs e)
         {
             var name = processNameInput.Text.Trim();
-            Process[] processes = Process.GetProcessesByName(name);
-            if (processes.Length < 1)
+            var wins = Utils.findWindows(name);
+            if (wins == null)
             {
                 queryLabel.Text = "未查询到进程";
+                return;
+            }
+
+            if (wins.Count < 1)
+            {
+                queryLabel.Text = "未查询到窗口";
             }
             else
             {
-                foreach (Process proc in processes)
+                if (wins.Count > 1)
                 {
-                    if (User32.IsWindow(proc.MainWindowHandle))
+                    queryLabel.Text = "查询到多个窗口";
+                    foreach (IntPtr win in wins)
                     {
-                        StringBuilder title = new StringBuilder(User32.GetWindowTextLength
-            (proc.MainWindowHandle) + 1);
-                        User32.GetWindowText(proc.MainWindowHandle, title, 20);
-                        queryLabel.Text = "查询到窗口\"" + title.ToString() + "\"" + (User32.IsWindowVisible(proc.MainWindowHandle) ? "已显示" : "未显示");
+                        string title = User32.GetWindowTitle(win);
+                        queryLabel.Text += " \"" + title + "\"" + (User32.IsWindowVisible(win) ? "已显示" : "未显示") + " ";
                     }
-                    else
-                    {
-                        queryLabel.Text = "未查询到窗口";
-                    }
+                }
+                else
+                {
+                    string title = User32.GetWindowTitle(wins[0]);
+                    queryLabel.Text = "查询到窗口\"" + title + "\"" + (User32.IsWindowVisible(wins[0]) ? "已显示" : "未显示");
                 }
             }
         }
@@ -138,29 +144,38 @@ namespace ConfigWindow
         {
             if (GetInput())
             {
-                Process[] processes = Process.GetProcessesByName(processName);
-                if (processes.Length < 1)
+                var wins = Utils.findWindows(processName);
+                if (wins == null)
                 {
-                    errorLabel.Text = "未查询到进程";
+                    queryLabel.Text = "未查询到进程";
+                    return;
+                }
+                if (wins.Count < 1)
+                {
+                    queryLabel.Text = "未查询到窗口";
                 }
                 else
                 {
-                    foreach (Process proc in processes)
+                    if (wins.Count > 1)
                     {
-                        if (User32.IsWindow(proc.MainWindowHandle))
+                        queryLabel.Text = "查询到多个窗口";
+                        foreach (IntPtr win in wins)
                         {
-                            StringBuilder title = new StringBuilder(User32.GetWindowTextLength
-                (proc.MainWindowHandle) + 1);
-                            User32.GetWindowText(proc.MainWindowHandle, title, 20);
-                            var isVisible = User32.IsWindowVisible(proc.MainWindowHandle);
+                            string stitle = User32.GetWindowTitle(win);
 
-                            var moved = User32.MoveWindow(proc.MainWindowHandle, left, top, width, height, 1);
-                            errorLabel.Text = "查询到窗口\"" + title.ToString() + "\"" + (isVisible ? "已显示" : "未显示") + (moved ? "已设置" : "未设置");
+                            var isVisible = User32.IsWindowVisible(win);
+
+                            var moved = User32.MoveWindow(win, left, top, width, height, 1);
+                            errorLabel.Text = " \"" + stitle + "\"" + (isVisible ? "已显示" : "未显示") + (moved ? "已设置" : "未设置") + "/";
                         }
-                        else
-                        {
-                            errorLabel.Text = "未查询到窗口";
-                        }
+                    }
+                    else
+                    {
+                        string title = User32.GetWindowTitle(wins[0]);
+                        var isVisible = User32.IsWindowVisible(wins[0]);
+
+                        var moved = User32.MoveWindow(wins[0], left, top, width, height, 1);
+                        errorLabel.Text = "查询到窗口\"" + title + "\"" + (isVisible ? "已显示" : "未显示") + (moved ? "已设置" : "未设置");
                     }
                 }
             }
