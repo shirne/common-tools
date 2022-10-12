@@ -37,13 +37,16 @@ namespace ConfigWindow
             this.windowList = new System.Windows.Forms.TreeView();
             this.windowListBtn = new System.Windows.Forms.Button();
             this.reloadBtn = new System.Windows.Forms.Button();
+            this.displayListExpand = new System.Windows.Forms.Button();
+            this.windowListExpand = new System.Windows.Forms.Button();
+            this.configListExpand = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // configList
             // 
             this.configList.Location = new System.Drawing.Point(28, 48);
             this.configList.Name = "configList";
-            this.configList.Size = new System.Drawing.Size(282, 376);
+            this.configList.Size = new System.Drawing.Size(239, 361);
             this.configList.TabIndex = 0;
             // 
             // label1
@@ -57,24 +60,24 @@ namespace ConfigWindow
             // 
             // SetWindowBtn
             // 
-            this.SetWindowBtn.Location = new System.Drawing.Point(235, 19);
+            this.SetWindowBtn.Location = new System.Drawing.Point(28, 415);
             this.SetWindowBtn.Name = "SetWindowBtn";
             this.SetWindowBtn.Size = new System.Drawing.Size(75, 23);
             this.SetWindowBtn.TabIndex = 2;
-            this.SetWindowBtn.Text = "设置窗口";
+            this.SetWindowBtn.Text = "应用设置";
             this.SetWindowBtn.UseVisualStyleBackColor = true;
             this.SetWindowBtn.Click += new System.EventHandler(this.SetWindowBtn_Click);
             // 
             // displayList
             // 
-            this.displayList.Location = new System.Drawing.Point(317, 48);
+            this.displayList.Location = new System.Drawing.Point(273, 48);
             this.displayList.Name = "displayList";
-            this.displayList.Size = new System.Drawing.Size(226, 376);
+            this.displayList.Size = new System.Drawing.Size(241, 361);
             this.displayList.TabIndex = 3;
             // 
             // displayListBtn
             // 
-            this.displayListBtn.Location = new System.Drawing.Point(317, 19);
+            this.displayListBtn.Location = new System.Drawing.Point(273, 19);
             this.displayListBtn.Name = "displayListBtn";
             this.displayListBtn.Size = new System.Drawing.Size(101, 23);
             this.displayListBtn.TabIndex = 4;
@@ -84,14 +87,14 @@ namespace ConfigWindow
             // 
             // windowList
             // 
-            this.windowList.Location = new System.Drawing.Point(550, 48);
+            this.windowList.Location = new System.Drawing.Point(520, 48);
             this.windowList.Name = "windowList";
-            this.windowList.Size = new System.Drawing.Size(225, 376);
+            this.windowList.Size = new System.Drawing.Size(255, 361);
             this.windowList.TabIndex = 5;
             // 
             // windowListBtn
             // 
-            this.windowListBtn.Location = new System.Drawing.Point(550, 19);
+            this.windowListBtn.Location = new System.Drawing.Point(520, 19);
             this.windowListBtn.Name = "windowListBtn";
             this.windowListBtn.Size = new System.Drawing.Size(75, 23);
             this.windowListBtn.TabIndex = 6;
@@ -109,11 +112,44 @@ namespace ConfigWindow
             this.reloadBtn.UseVisualStyleBackColor = true;
             this.reloadBtn.Click += new System.EventHandler(this.reloadBtn_Click);
             // 
+            // displayListExpand
+            // 
+            this.displayListExpand.Location = new System.Drawing.Point(439, 19);
+            this.displayListExpand.Name = "displayListExpand";
+            this.displayListExpand.Size = new System.Drawing.Size(75, 23);
+            this.displayListExpand.TabIndex = 8;
+            this.displayListExpand.Text = "折叠全部";
+            this.displayListExpand.UseVisualStyleBackColor = true;
+            this.displayListExpand.Click += new System.EventHandler(this.displayListExpand_Click);
+            // 
+            // windowListExpand
+            // 
+            this.windowListExpand.Location = new System.Drawing.Point(700, 19);
+            this.windowListExpand.Name = "windowListExpand";
+            this.windowListExpand.Size = new System.Drawing.Size(75, 23);
+            this.windowListExpand.TabIndex = 9;
+            this.windowListExpand.Text = "展开全部";
+            this.windowListExpand.UseVisualStyleBackColor = true;
+            this.windowListExpand.Click += new System.EventHandler(this.windowListExpand_Click);
+            // 
+            // configListExpand
+            // 
+            this.configListExpand.Location = new System.Drawing.Point(192, 19);
+            this.configListExpand.Name = "configListExpand";
+            this.configListExpand.Size = new System.Drawing.Size(75, 23);
+            this.configListExpand.TabIndex = 10;
+            this.configListExpand.Text = "展开全部";
+            this.configListExpand.UseVisualStyleBackColor = true;
+            this.configListExpand.Click += new System.EventHandler(this.configListExpand_Click);
+            // 
             // SetWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.configListExpand);
+            this.Controls.Add(this.windowListExpand);
+            this.Controls.Add(this.displayListExpand);
             this.Controls.Add(this.reloadBtn);
             this.Controls.Add(this.windowListBtn);
             this.Controls.Add(this.windowList);
@@ -139,6 +175,9 @@ namespace ConfigWindow
         private System.Windows.Forms.TreeView windowList;
         private System.Windows.Forms.Button windowListBtn;
         private System.Windows.Forms.Button reloadBtn;
+        private System.Windows.Forms.Button displayListExpand;
+        private System.Windows.Forms.Button windowListExpand;
+        private System.Windows.Forms.Button configListExpand;
     }
 }
 

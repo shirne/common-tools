@@ -66,10 +66,21 @@ namespace ConfigWindow
                 }
 
                 config.items.Add(configItem);
-                configList.Nodes.Add(configItem.processName + "-" + configItem.left + "," + configItem.top + "/" + configItem.width + "," + configItem.height);
+
+                var treeNode = new TreeNode(configItem.processName + "-" + configItem.left + "," + configItem.top + "/" + configItem.width + "," + configItem.height);
+                addItemProps(treeNode, configItem);
+                configList.Nodes.Add(treeNode);
             }
 
 
+        }
+
+        private void addItemProps(TreeNode treeNode, ItemConfig itemConfig)
+        {
+            treeNode.Nodes.Add(new TreeNode("Left:" + itemConfig.left));
+            treeNode.Nodes.Add(new TreeNode("Top:" + itemConfig.top));
+            treeNode.Nodes.Add(new TreeNode("Width:" + itemConfig.width));
+            treeNode.Nodes.Add(new TreeNode("Height:" + itemConfig.height));
         }
 
 
@@ -80,6 +91,7 @@ namespace ConfigWindow
             {
                 Process[] processes = Process.GetProcessesByName(item.processName);
                 bool seted = false;
+                var treeNode = new TreeNode(item.processName + "-" + item.left + "," + item.top + "/" + item.width + "," + item.height);
                 foreach (Process proc in processes)
                 {
                     if (User32.MoveWindow(proc.MainWindowHandle, item.left, item.top, item.width, item.height, 1))
@@ -90,37 +102,56 @@ namespace ConfigWindow
                         info.cbSize = (uint)Marshal.SizeOf(info);
                         bool isInfoget = User32.GetWindowInfo(proc.MainWindowHandle, ref info);
 
-                        configList.Nodes.Add(proc.ProcessName + "-" + "positioned" + "/" + getRect(info.rcWindow));
+                        treeNode.Text = item.processName + "-" + "positioned" + "/" + getRect(info.rcWindow);
+                        
                         seted = true;
                     }
 
                 }
                 if (!seted)
                 {
-                    configList.Nodes.Add(item.processName + "-" + "not found");
+                    treeNode.Text = item.processName + "-" + "not found";
                 }
+
+                addItemProps(treeNode, item);
+                configList.Nodes.Add(treeNode);
             }
         }
 
         private string getRect(RECT rect)
         {
-            return rect.Left + "," + rect.Top + "/" + rect.Right + "," + rect.Bottom;
+            return rect.Left + "," + rect.Top + "/" + (rect.Right-rect.Left) + "," + (rect.Bottom-rect.Top);
+        }
+
+        private TreeNode rectNode(RECT rect, String prefix)
+        {
+            var node = new TreeNode(prefix+":"+getRect(rect));
+            node.Nodes.Add(new TreeNode("Left:" + rect.Left));
+            node.Nodes.Add(new TreeNode("Top:" + rect.Top));
+            node.Nodes.Add(new TreeNode("Right:" + rect.Right));
+            node.Nodes.Add(new TreeNode("Bottom:" + rect.Bottom));
+            return node;
         }
 
 
         private void windowListBtn_Click(object sender, EventArgs e)
         {
             windowList.Nodes.Clear();
+            if (inVisibleWindows != null)
+            {
+                inVisibleWindows.Nodes.Clear();
+            }
+            inVisibleWindows = new TreeNode("InVisible Windows");
             //LabelStatus.Text = GetWindows().Count.ToString();
             EnumWindowsProc ewp = new EnumWindowsProc(EnumWindows);
             User32.EnumWindows(ewp, 0);
+            windowList.Nodes.Add(inVisibleWindows);
         }
+
+        TreeNode inVisibleWindows;
         private bool EnumWindows(IntPtr win, int lParam)
         {
-            if (!User32.IsWindowVisible(win))
-            {
-                return true;
-            }
+           
             WINDOWINFO info = new WINDOWINFO();
             info.cbSize = (uint)Marshal.SizeOf(info);
             bool isInfoget = User32.GetWindowInfo(win, ref info);
@@ -135,7 +166,21 @@ namespace ConfigWindow
             StringBuilder className = new StringBuilder(100);
             User32.GetClassName(win, className, 100);
 
-            windowList.Nodes.Add(win.ToInt32().ToString(), Convert.ToInt64(info.atomWindowType).ToString() + "-" + User32.IsWindowVisible(win) + "-" + title.ToString() + "-" + processId.ToString() + "-" + className.ToString());
+            var node = new TreeNode(Convert.ToInt64(info.atomWindowType).ToString() + "-" + title.ToString());
+            node.Nodes.Add("Status:" + info.dwWindowStatus.ToString());
+            node.Nodes.Add("ProcessId:" + processId.ToString());
+            node.Nodes.Add("ClassName:" + className.ToString());
+            node.Nodes.Add(rectNode(info.rcClient,"ClientRect" ));
+            node.Nodes.Add(rectNode(info.rcClient, "WindowRect"));
+
+            if (!User32.IsWindowVisible(win))
+            {
+                inVisibleWindows.Nodes.Add(node);
+                return true;
+            }
+            // node.Expand();
+
+            windowList.Nodes.Add(node);
             return true;
         }
 
@@ -157,6 +202,59 @@ namespace ConfigWindow
         private void reloadBtn_Click(object sender, EventArgs e)
         {
             loadConfigs();
+        }
+
+        private void displayListExpand_Click(object sender, EventArgs e)
+        {
+            bool isExpand = displayListExpand.Text.Contains("展开");
+            foreach(TreeNode node in displayList.Nodes)
+            {
+                if (isExpand)
+                {
+                    node.Expand();
+                }
+                else
+                {
+                    node.Collapse(false);
+                }
+            }
+            displayListExpand.Text = isExpand ? "折叠全部" : "展开全部";
+        }
+
+        private void windowListExpand_Click(object sender, EventArgs e)
+        {
+            bool isExpand = windowListExpand.Text.Contains("展开");
+            foreach (TreeNode node in windowList.Nodes)
+            {
+
+                if (isExpand)
+                {
+                    node.Expand();
+                }
+                else
+                {
+                    node.Collapse(true);
+                }
+            }
+            windowListExpand.Text = isExpand ? "折叠全部" : "展开全部";
+        }
+
+        private void configListExpand_Click(object sender, EventArgs e)
+        {
+            bool isExpand = configListExpand.Text.Contains("展开");
+            foreach (TreeNode node in configList.Nodes)
+            {
+
+                if (isExpand)
+                {
+                    node.Expand();
+                }
+                else
+                {
+                    node.Collapse(true);
+                }
+            }
+            configListExpand.Text = isExpand ? "折叠全部" : "展开全部";
         }
     }
 }
