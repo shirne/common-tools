@@ -43,6 +43,8 @@ namespace ConfigWindow
                 var treeNode = new TreeNode(configItem.processName + "-" + configItem.left + "," + configItem.top + "/" + configItem.width + "," + configItem.height);
                 treeNode.Tag = count;
                 addItemProps(treeNode, configItem);
+
+                addDelNode(treeNode, count);
                 configList.Nodes.Add(treeNode);
                 count++;
             }
@@ -57,6 +59,13 @@ namespace ConfigWindow
             treeNode.Nodes.Add(new TreeNode("Height:" + itemConfig.height));
         }
 
+        private void addDelNode(TreeNode treeNode, int index)
+        {
+            var delNode = new TreeNode("删除");
+            delNode.Tag = "del-" + index;
+            treeNode.Nodes.Add(delNode);
+        }
+
 
         private void SetWindowBtn_Click(object sender, EventArgs e)
         {
@@ -64,27 +73,24 @@ namespace ConfigWindow
         }
         private void DoSetWindow()
         {
-            configList.Nodes.Clear();
+            var count = 0;
             foreach (ItemConfig item in config.items)
             {
                 var wins = Utils.findWindows(item.processName);
 
-                var treeNode = new TreeNode(item.processName + "-" + item.left + "," + item.top + "/" + item.width + "," + item.height);
-
-                addItemProps(treeNode, item);
                 if (wins == null)
                 {
-                    treeNode.Text = item.processName + "-" + "not found";
+                    configList.Nodes[count].Text = item.processName + "-" + "not found";
                 }
                 else
                 {
                     if (wins.Count < 1)
                     {
-                        treeNode.Text = item.processName + "-" + "not found any windows";
+                        configList.Nodes[count].Text = item.processName + "-" + "not found any windows";
                     }
                     else if (wins.Count > 1)
                     {
-                        treeNode.Text = item.processName + "-" + " found "+ wins.Count + " windows";
+                        configList.Nodes[count].Text = item.processName + "-" + " found "+ wins.Count + " windows";
                         foreach(IntPtr win in wins)
                         {
                             if (User32.MoveWindow(win, item.left, item.top, item.width, item.height, 1))
@@ -93,7 +99,7 @@ namespace ConfigWindow
                                 info.cbSize = (uint)Marshal.SizeOf(info);
                                 bool isInfoget = User32.GetWindowInfo(win, ref info);
 
-                                treeNode.Nodes.Add( User32.GetWindowTitle(win) + "-" + "positioned" + "/" + getRect(info.rcWindow));
+                                //treeNode.Nodes.Add( User32.GetWindowTitle(win) + "-" + "positioned" + "/" + getRect(info.rcWindow));
                             }
                         }
                     }
@@ -105,12 +111,12 @@ namespace ConfigWindow
                             info.cbSize = (uint)Marshal.SizeOf(info);
                             bool isInfoget = User32.GetWindowInfo(wins[0], ref info);
 
-                            treeNode.Text = item.processName + "-" + "positioned" + "/" + getRect(info.rcWindow);
+                            configList.Nodes[count].Text = item.processName + "-" + "positioned" + "/" + getRect(info.rcWindow);
                         }
                     }
                 }
 
-                configList.Nodes.Add(treeNode);
+                count++;
             }
         }
 
@@ -307,6 +313,39 @@ namespace ConfigWindow
                 add.width = item.width;
                 add.height = item.height;
                 add.ShowDialog(this);
+            }
+        }
+
+        private void configList_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            var action = e.Node.Tag;
+            if (action != null)
+            {
+                string[] parts = action.ToString().Split('-');
+                if (parts.Length > 1)
+                {
+                    int index = -1;
+                    if(int.TryParse(parts[1],out index))
+                    {
+                        if(index<0 || index > config.items.Count)
+                        {
+                            MessageBox.Show("序号错误", "提示", MessageBoxButtons.OK);
+                            showConfig();
+                            return;
+                        }
+                        
+                        if (parts[0] == "del")
+                        {
+                            var result=MessageBox.Show("确定删除 " + config.items[index].processName,"提示", MessageBoxButtons.OKCancel);
+                            if (result == DialogResult.OK)
+                            {
+                                config.items.RemoveAt(index);
+                                Utils.saveConfig(config);
+                                showConfig();
+                            }
+                        }
+                    }
+                }
             }
         }
     }

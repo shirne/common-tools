@@ -50,6 +50,7 @@ namespace ConfigWindow
             this.configList.Name = "configList";
             this.configList.Size = new System.Drawing.Size(239, 361);
             this.configList.TabIndex = 0;
+            this.configList.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configList_NodeMouseClick);
             this.configList.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configList_NodeMouseDoubleClick);
             // 
             // label1
