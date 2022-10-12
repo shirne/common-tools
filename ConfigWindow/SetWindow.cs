@@ -12,15 +12,12 @@ namespace ConfigWindow
     public partial class SetWindow : Form
     {
         XmlConfig config;
-        string configFile = "config.xml";
-        const string emptyXml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?><configs></configs>";
 
         string[] args;
         public SetWindow(string[] args)
         {
             this.args = args;
             InitializeComponent();
-            configFile = Directory.GetCurrentDirectory() + "/" + configFile;
             loadConfigs();
             foreach(string arg in args)
             {
@@ -32,59 +29,7 @@ namespace ConfigWindow
         }
         private void loadConfigs()
         {
-            var doc = new XmlDocument();
-            config = new XmlConfig();
-            if (!File.Exists(configFile))
-            {
-                doc.LoadXml(emptyXml);
-                config.items.Add(new ItemConfig() { 
-                    processName="QQ",
-                });
-                config.items.Add(new ItemConfig()
-                {
-                    processName = "TIM",
-                });
-                config.items.Add(new ItemConfig()
-                {
-                    processName = "WeChat",
-                });
-                saveConfig();
-            }
-            else
-            {
-                doc.Load(configFile);
-                var nodes = doc.SelectNodes("configs/item");
-                foreach (XmlNode node in nodes)
-                {
-                    var configItem = new ItemConfig();
-                    foreach (XmlNode item in node.ChildNodes)
-                    {
-                        int value = 0;
-                        int.TryParse(item.InnerText, out value);
-                        switch (item.Name)
-                        {
-                            case "processName":
-                                configItem.processName = item.InnerText;
-                                break;
-                            case "left":
-                                configItem.left = value;
-                                break;
-                            case "top":
-                                configItem.top = value;
-                                break;
-                            case "width":
-                                if (value > 0) configItem.width = value;
-                                break;
-                            case "height":
-                                if (value > 0) configItem.height = value;
-                                break;
-                        }
-
-                    }
-                    config.items.Add(configItem);
-                }
-
-            }
+            config = Utils.loadConfig();
             showConfig();
         }
 
@@ -122,31 +67,49 @@ namespace ConfigWindow
             configList.Nodes.Clear();
             foreach (ItemConfig item in config.items)
             {
-                Process[] processes = Process.GetProcessesByName(item.processName);
-                bool seted = false;
+                var wins = Utils.findWindows(item.processName);
+
                 var treeNode = new TreeNode(item.processName + "-" + item.left + "," + item.top + "/" + item.width + "," + item.height);
-                foreach (Process proc in processes)
-                {
-                    if (User32.MoveWindow(proc.MainWindowHandle, item.left, item.top, item.width, item.height, 1))
-                    {
-                        //User32.SetForegroundWindow(proc.MainWindowHandle);
 
-                        WINDOWINFO info = new WINDOWINFO();
-                        info.cbSize = (uint)Marshal.SizeOf(info);
-                        bool isInfoget = User32.GetWindowInfo(proc.MainWindowHandle, ref info);
-
-                        treeNode.Text = item.processName + "-" + "positioned" + "/" + getRect(info.rcWindow);
-                        
-                        seted = true;
-                    }
-
-                }
-                if (!seted)
+                addItemProps(treeNode, item);
+                if (wins == null)
                 {
                     treeNode.Text = item.processName + "-" + "not found";
                 }
+                else
+                {
+                    if (wins.Count < 1)
+                    {
+                        treeNode.Text = item.processName + "-" + "not found any windows";
+                    }
+                    else if (wins.Count > 1)
+                    {
+                        treeNode.Text = item.processName + "-" + " found "+ wins.Count + " windows";
+                        foreach(IntPtr win in wins)
+                        {
+                            if (User32.MoveWindow(win, item.left, item.top, item.width, item.height, 1))
+                            {
+                                WINDOWINFO info = new WINDOWINFO();
+                                info.cbSize = (uint)Marshal.SizeOf(info);
+                                bool isInfoget = User32.GetWindowInfo(win, ref info);
 
-                addItemProps(treeNode, item);
+                                treeNode.Nodes.Add( User32.GetWindowTitle(win) + "-" + "positioned" + "/" + getRect(info.rcWindow));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (User32.MoveWindow(wins[0], item.left, item.top, item.width, item.height, 1))
+                        {
+                            WINDOWINFO info = new WINDOWINFO();
+                            info.cbSize = (uint)Marshal.SizeOf(info);
+                            bool isInfoget = User32.GetWindowInfo(wins[0], ref info);
+
+                            treeNode.Text = item.processName + "-" + "positioned" + "/" + getRect(info.rcWindow);
+                        }
+                    }
+                }
+
                 configList.Nodes.Add(treeNode);
             }
         }
@@ -317,52 +280,13 @@ namespace ConfigWindow
             {
                 config.items.Add(item);
             }
-            saveConfig();
+            Utils.saveConfig(config);
             showConfig();
         }
 
         private void saveConfigBtn_Click(object sender, EventArgs e)
         {
-            saveConfig();
-        }
-        private void saveConfig()
-        {
-            var doc = new XmlDocument();
-            doc.LoadXml("<?xml version=\"1.0\" encoding=\"utf-8\" ?><configs></configs>");
-            var configNode = doc.SelectSingleNode("configs");
-            foreach(ItemConfig item in config.items)
-            {
-                var child = doc.CreateElement("item");
-                var processNameNode = doc.CreateElement("processName");
-                processNameNode.InnerText = item.processName;
-                child.AppendChild(processNameNode);
-
-                var leftNode = doc.CreateElement("left");
-                leftNode.InnerText = item.left.ToString();
-                child.AppendChild(leftNode);
-
-                var topNode = doc.CreateElement("top");
-                topNode.InnerText = item.top.ToString();
-                child.AppendChild(topNode);
-
-                var widthNode = doc.CreateElement("width");
-                widthNode.InnerText = item.width.ToString();
-                child.AppendChild(widthNode);
-
-                var heightNode = doc.CreateElement("height");
-                heightNode.InnerText = item.height.ToString();
-                child.AppendChild(heightNode);
-
-                configNode.AppendChild(child);
-            }
-
-            using (XmlTextWriter writer = new XmlTextWriter(configFile,Encoding.UTF8))
-            {
-                writer.Indentation = 4;
-                writer.Formatting = Formatting.Indented;
-                doc.WriteTo(writer);
-                writer.Flush();
-            }
+            Utils.saveConfig(config);
         }
 
         private void configList_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)

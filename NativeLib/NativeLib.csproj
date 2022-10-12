@@ -46,6 +46,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenApi.cs" />
     <Compile Include="User32.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="XmlConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

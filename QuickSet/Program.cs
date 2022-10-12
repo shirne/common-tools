@@ -3,36 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace ConfigWindow
+namespace QuickSet
 {
-    static class Program
+    class Program
     {
-        /// <summary>
-        /// 应用程序的主入口点。
-        /// </summary>
-        [STAThread]
+        static XmlConfig config;
         static void Main(string[] args)
         {
-            bool isQuit = false;
-            foreach (string arg in args)
-            {
-                if ("--apply-quit".Equals(arg))
-                {
-                    DoSetWindow(Utils.loadConfig(false));
-                    isQuit = true;
-                }
-            }
-            if (!isQuit)
-            {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new SetWindow(args));
-            }
+            config = Utils.loadConfig(false);
+            SetWindow();
         }
-        static void DoSetWindow(XmlConfig config)
+
+        static void SetWindow()
         {
             foreach (ItemConfig item in config.items)
             {
@@ -47,8 +32,7 @@ namespace ConfigWindow
                     {
                         Console.WriteLine(item.processName + ": not found any window");
                     }
-                    else
-                    if (wins.Count > 1)
+                    else if (wins.Count > 1)
                     {
                         foreach (IntPtr win in wins)
                         {

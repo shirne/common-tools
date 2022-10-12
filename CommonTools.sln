@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigWindow", "ConfigWindo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NativeLib", "NativeLib\NativeLib.csproj", "{BD831111-2359-4F51-8DB8-F2E33FBD9D45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickSet", "QuickSet\QuickSet.csproj", "{0FA6A29F-6DE2-4B0E-BA61-4A7DB8363F4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BD831111-2359-4F51-8DB8-F2E33FBD9D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD831111-2359-4F51-8DB8-F2E33FBD9D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD831111-2359-4F51-8DB8-F2E33FBD9D45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FA6A29F-6DE2-4B0E-BA61-4A7DB8363F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FA6A29F-6DE2-4B0E-BA61-4A7DB8363F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FA6A29F-6DE2-4B0E-BA61-4A7DB8363F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FA6A29F-6DE2-4B0E-BA61-4A7DB8363F4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
