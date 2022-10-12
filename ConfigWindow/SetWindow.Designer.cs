@@ -40,6 +40,8 @@ namespace ConfigWindow
             this.displayListExpand = new System.Windows.Forms.Button();
             this.windowListExpand = new System.Windows.Forms.Button();
             this.configListExpand = new System.Windows.Forms.Button();
+            this.addConfigBtn = new System.Windows.Forms.Button();
+            this.saveConfigBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // configList
@@ -48,6 +50,7 @@ namespace ConfigWindow
             this.configList.Name = "configList";
             this.configList.Size = new System.Drawing.Size(239, 361);
             this.configList.TabIndex = 0;
+            this.configList.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configList_NodeMouseDoubleClick);
             // 
             // label1
             // 
@@ -142,11 +145,33 @@ namespace ConfigWindow
             this.configListExpand.UseVisualStyleBackColor = true;
             this.configListExpand.Click += new System.EventHandler(this.configListExpand_Click);
             // 
+            // addConfigBtn
+            // 
+            this.addConfigBtn.Location = new System.Drawing.Point(109, 415);
+            this.addConfigBtn.Name = "addConfigBtn";
+            this.addConfigBtn.Size = new System.Drawing.Size(75, 23);
+            this.addConfigBtn.TabIndex = 11;
+            this.addConfigBtn.Text = "添加配置";
+            this.addConfigBtn.UseVisualStyleBackColor = true;
+            this.addConfigBtn.Click += new System.EventHandler(this.addConfigBtn_Click);
+            // 
+            // saveConfigBtn
+            // 
+            this.saveConfigBtn.Location = new System.Drawing.Point(190, 415);
+            this.saveConfigBtn.Name = "saveConfigBtn";
+            this.saveConfigBtn.Size = new System.Drawing.Size(75, 23);
+            this.saveConfigBtn.TabIndex = 12;
+            this.saveConfigBtn.Text = "保存配置";
+            this.saveConfigBtn.UseVisualStyleBackColor = true;
+            this.saveConfigBtn.Click += new System.EventHandler(this.saveConfigBtn_Click);
+            // 
             // SetWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.saveConfigBtn);
+            this.Controls.Add(this.addConfigBtn);
             this.Controls.Add(this.configListExpand);
             this.Controls.Add(this.windowListExpand);
             this.Controls.Add(this.displayListExpand);
@@ -178,6 +203,8 @@ namespace ConfigWindow
         private System.Windows.Forms.Button displayListExpand;
         private System.Windows.Forms.Button windowListExpand;
         private System.Windows.Forms.Button configListExpand;
+        private System.Windows.Forms.Button addConfigBtn;
+        private System.Windows.Forms.Button saveConfigBtn;
     }
 }
 
