@@ -95,6 +95,8 @@ namespace ConfigWindow
             this.windowList.Name = "windowList";
             this.windowList.Size = new System.Drawing.Size(255, 361);
             this.windowList.TabIndex = 5;
+            this.windowList.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.windowList_AfterExpand);
+            this.windowList.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.windowList_NodeMouseDoubleClick);
             // 
             // windowListBtn
             // 

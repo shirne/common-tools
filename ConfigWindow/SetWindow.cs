@@ -1,5 +1,6 @@
 ﻿using NativeLib;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -14,6 +15,8 @@ namespace ConfigWindow
         XmlConfig config;
 
         string[] args;
+
+        Dictionary<String, long> windowStyles;
         public SetWindow(string[] args)
         {
             this.args = args;
@@ -134,6 +137,30 @@ namespace ConfigWindow
             node.Nodes.Add(new TreeNode("Bottom:" + rect.Bottom));
             return node;
         }
+        private TreeNode styleNode(uint style, String prefix)
+        {
+            var node = new TreeNode(prefix + ": 0x" + style.ToString("X"));
+            if(windowStyles == null)
+            {
+                windowStyles = Utils.WindowStyles();
+            }
+            foreach (var keyvalue in windowStyles)
+            {
+                if((style & keyvalue.Value) == keyvalue.Value)
+                {
+                    node.Nodes.Add(new TreeNode(keyvalue.Key));
+                }
+            }
+            return node;
+        }
+
+        private TreeNode processNode(int processId)
+        {
+            var node = new TreeNode("Process: "+ processId);
+            node.Tag = processId;
+            node.Nodes.Add("...");
+            return node;
+        }
 
 
         private void windowListBtn_Click(object sender, EventArgs e)
@@ -154,9 +181,7 @@ namespace ConfigWindow
         private bool EnumWindows(IntPtr win, int lParam)
         {
            
-            WINDOWINFO info = new WINDOWINFO();
-            info.cbSize = (uint)Marshal.SizeOf(info);
-            bool isInfoget = User32.GetWindowInfo(win, ref info);
+            WINDOWINFO info  = User32.GetWindowInfo(win);
             
             string title = User32.GetWindowTitle(win);
 
@@ -166,12 +191,15 @@ namespace ConfigWindow
             StringBuilder className = new StringBuilder(100);
             User32.GetClassName(win, className, 100);
 
-            var node = new TreeNode(Convert.ToInt64(info.atomWindowType).ToString() + "-" + title);
+            var node = new TreeNode(info.atomWindowType.ToString() + "-" + title);
+            node.Tag = win;
             node.Nodes.Add("Status:" + info.dwWindowStatus.ToString());
-            node.Nodes.Add("ProcessId:" + processId.ToString());
+            node.Nodes.Add(processNode(Convert.ToInt32(processId)));
             node.Nodes.Add("ClassName:" + className.ToString());
+            node.Nodes.Add(styleNode(info.dwStyle, "Style"));
             node.Nodes.Add(rectNode(info.rcClient,"ClientRect" ));
             node.Nodes.Add(rectNode(info.rcClient, "WindowRect"));
+            node.Nodes.Add("Border:" + info.cxWindowBorders+","+info.cyWindowBorders);
 
             if (!User32.IsWindowVisible(win))
             {
@@ -345,6 +373,48 @@ namespace ConfigWindow
                             }
                         }
                     }
+                }
+            }
+        }
+
+        private void windowList_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+            var tag = e.Node.Tag;
+            if(tag is int && e.Node.Nodes.Count == 1)
+            {
+                var process = Process.GetProcessById((int)tag);
+                e.Node.Nodes.Clear();
+                e.Node.Nodes.Add("ProcessId:" + tag.ToString());
+                e.Node.Nodes.Add("ProcessName:" + process.ProcessName);
+                e.Node.Nodes.Add("Priority:" + process.BasePriority);
+                e.Node.Nodes.Add("MachineName:" + process.MachineName);
+            }
+        }
+
+        private void windowList_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            var node = e.Node;
+            var tag = node.Tag;
+            while(node.Parent != null && !(tag is IntPtr))
+            {
+                node = node.Parent;
+                tag = node.Tag;
+            }
+            if (tag == null) return;
+            if(tag is IntPtr)
+            {
+                var processId = User32.GetWindowThreadProcessId((IntPtr)tag);
+                if (processId > 0) {
+                    var process = Process.GetProcessById(processId);
+                    var add = new Add();
+                    add.index = config.items.FindIndex((config) => config.processName == process.ProcessName);
+                    var winInfo = User32.GetWindowInfo((IntPtr)tag);
+                    add.processName = process.ProcessName;
+                    add.left = winInfo.rcClient.Left;
+                    add.top = winInfo.rcClient.Top;
+                    add.width = winInfo.rcClient.Right-winInfo.rcClient.Left;
+                    add.height = winInfo.rcClient.Bottom - winInfo.rcClient.Top;
+                    add.ShowDialog(this);
                 }
             }
         }

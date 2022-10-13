@@ -102,11 +102,29 @@ namespace NativeLib
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool GetWindowInfo(IntPtr hWnd, ref WINDOWINFO pwi);
 
+        public static WINDOWINFO GetWindowInfo(IntPtr hWnd)
+        {
+            WINDOWINFO info = new WINDOWINFO();
+            info.cbSize = (uint)Marshal.SizeOf(info);
+            if( GetWindowInfo(hWnd, ref info))
+            {
+                return info;
+            }
+            return info;
+        }
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowTextLength(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        public static int GetWindowThreadProcessId(IntPtr hWnd)
+        {
+            uint processId=0;
+            GetWindowThreadProcessId(hWnd, out processId);
+            return Convert.ToInt32(processId);
+        }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);

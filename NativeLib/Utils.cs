@@ -37,6 +37,41 @@ namespace NativeLib
             return windows;
         }
 
+        public static Dictionary<string, long> WindowStyles()
+        {
+            var map = new Dictionary<string,long >();
+
+            map.Add("WS_BORDER", 0x00800000L);
+            map.Add("WS_CAPTION", 0x00C00000L);
+            map.Add("WS_CHILD", 0x40000000L);
+            map.Add("WS_CHILDWINDOW", 0x40000000L);
+            map.Add("WS_CLIPCHILDREN", 0x02000000L);
+            map.Add("WS_CLIPSIBLINGS", 0x04000000L);
+            map.Add("WS_DISABLED", 0x08000000L);
+            map.Add("WS_DLGFRAME", 0x00400000L);
+            map.Add("WS_GROUP", 0x00020000L);
+            map.Add("WS_HSCROLL", 0x00100000L);
+            map.Add("WS_ICONIC", 0x20000000L);
+            map.Add("WS_MAXIMIZE", 0x01000000L);
+            map.Add("WS_MAXIMIZEBOX", 0x00010000L);
+            map.Add("WS_MINIMIZE", 0x20000000L);
+            map.Add("WS_MINIMIZEBOX", 0x00020000L);
+            map.Add("WS_OVERLAPPED", 0x00000000L);
+            map.Add("WS_OVERLAPPEDWINDOW", 0x00000000L | 0x00C00000L | 0x00080000L | 0x00040000L | 0x00020000L | 0x00010000L);
+            map.Add("WS_POPUP", 0x80000000L);
+            map.Add("WS_POPUPWINDOW", 0x80000000L | 0x00800000L | 0x00080000L);
+            map.Add("WS_SIZEBOX", 0x00040000L);
+            map.Add("WS_SYSMENU", 0x00080000L);
+            map.Add("WS_TABSTOP", 0x00010000L);
+            map.Add("WS_THICKFRAME", 0x00040000L);
+            map.Add("WS_TILED", 0x00000000L);
+            map.Add("WS_TILEDWINDOW", 0x00000000L | 0x00C00000L | 0x00080000L | 0x00040000L | 0x00020000L | 0x00010000L);
+            map.Add("WS_VISIBLE", 0x10000000L);
+            map.Add("WS_VSCROLL", 0x00200000L);
+
+            return map;
+        }
+
         public static XmlConfig loadConfig(bool create=true)
         {
             string file = Directory.GetCurrentDirectory() + "/" + configFile;
