@@ -29,6 +29,7 @@ namespace ConfigWindow
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SetWindow));
             this.configList = new System.Windows.Forms.TreeView();
             this.label1 = new System.Windows.Forms.Label();
             this.SetWindowBtn = new System.Windows.Forms.Button();
@@ -46,9 +47,10 @@ namespace ConfigWindow
             // 
             // configList
             // 
-            this.configList.Location = new System.Drawing.Point(28, 48);
+            this.configList.Location = new System.Drawing.Point(42, 72);
+            this.configList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.configList.Name = "configList";
-            this.configList.Size = new System.Drawing.Size(239, 361);
+            this.configList.Size = new System.Drawing.Size(356, 540);
             this.configList.TabIndex = 0;
             this.configList.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configList_NodeMouseClick);
             this.configList.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.configList_NodeMouseDoubleClick);
@@ -56,17 +58,19 @@ namespace ConfigWindow
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 24);
+            this.label1.Location = new System.Drawing.Point(39, 36);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 12);
+            this.label1.Size = new System.Drawing.Size(80, 18);
             this.label1.TabIndex = 1;
             this.label1.Text = "配置列表";
             // 
             // SetWindowBtn
             // 
-            this.SetWindowBtn.Location = new System.Drawing.Point(28, 415);
+            this.SetWindowBtn.Location = new System.Drawing.Point(42, 622);
+            this.SetWindowBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.SetWindowBtn.Name = "SetWindowBtn";
-            this.SetWindowBtn.Size = new System.Drawing.Size(75, 23);
+            this.SetWindowBtn.Size = new System.Drawing.Size(112, 34);
             this.SetWindowBtn.TabIndex = 2;
             this.SetWindowBtn.Text = "应用设置";
             this.SetWindowBtn.UseVisualStyleBackColor = true;
@@ -74,16 +78,18 @@ namespace ConfigWindow
             // 
             // displayList
             // 
-            this.displayList.Location = new System.Drawing.Point(273, 48);
+            this.displayList.Location = new System.Drawing.Point(410, 72);
+            this.displayList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.displayList.Name = "displayList";
-            this.displayList.Size = new System.Drawing.Size(241, 361);
+            this.displayList.Size = new System.Drawing.Size(360, 540);
             this.displayList.TabIndex = 3;
             // 
             // displayListBtn
             // 
-            this.displayListBtn.Location = new System.Drawing.Point(273, 19);
+            this.displayListBtn.Location = new System.Drawing.Point(410, 28);
+            this.displayListBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.displayListBtn.Name = "displayListBtn";
-            this.displayListBtn.Size = new System.Drawing.Size(101, 23);
+            this.displayListBtn.Size = new System.Drawing.Size(152, 34);
             this.displayListBtn.TabIndex = 4;
             this.displayListBtn.Text = "显示器";
             this.displayListBtn.UseVisualStyleBackColor = true;
@@ -91,18 +97,20 @@ namespace ConfigWindow
             // 
             // windowList
             // 
-            this.windowList.Location = new System.Drawing.Point(520, 48);
+            this.windowList.Location = new System.Drawing.Point(780, 72);
+            this.windowList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.windowList.Name = "windowList";
-            this.windowList.Size = new System.Drawing.Size(255, 361);
+            this.windowList.Size = new System.Drawing.Size(380, 540);
             this.windowList.TabIndex = 5;
             this.windowList.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.windowList_AfterExpand);
             this.windowList.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.windowList_NodeMouseDoubleClick);
             // 
             // windowListBtn
             // 
-            this.windowListBtn.Location = new System.Drawing.Point(520, 19);
+            this.windowListBtn.Location = new System.Drawing.Point(780, 28);
+            this.windowListBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.windowListBtn.Name = "windowListBtn";
-            this.windowListBtn.Size = new System.Drawing.Size(75, 23);
+            this.windowListBtn.Size = new System.Drawing.Size(112, 34);
             this.windowListBtn.TabIndex = 6;
             this.windowListBtn.Text = "窗口列表";
             this.windowListBtn.UseVisualStyleBackColor = true;
@@ -110,9 +118,10 @@ namespace ConfigWindow
             // 
             // reloadBtn
             // 
-            this.reloadBtn.Location = new System.Drawing.Point(85, 19);
+            this.reloadBtn.Location = new System.Drawing.Point(128, 28);
+            this.reloadBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.reloadBtn.Name = "reloadBtn";
-            this.reloadBtn.Size = new System.Drawing.Size(75, 23);
+            this.reloadBtn.Size = new System.Drawing.Size(112, 34);
             this.reloadBtn.TabIndex = 7;
             this.reloadBtn.Text = "重新加载配置";
             this.reloadBtn.UseVisualStyleBackColor = true;
@@ -120,9 +129,10 @@ namespace ConfigWindow
             // 
             // displayListExpand
             // 
-            this.displayListExpand.Location = new System.Drawing.Point(439, 19);
+            this.displayListExpand.Location = new System.Drawing.Point(658, 28);
+            this.displayListExpand.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.displayListExpand.Name = "displayListExpand";
-            this.displayListExpand.Size = new System.Drawing.Size(75, 23);
+            this.displayListExpand.Size = new System.Drawing.Size(112, 34);
             this.displayListExpand.TabIndex = 8;
             this.displayListExpand.Text = "折叠全部";
             this.displayListExpand.UseVisualStyleBackColor = true;
@@ -130,9 +140,10 @@ namespace ConfigWindow
             // 
             // windowListExpand
             // 
-            this.windowListExpand.Location = new System.Drawing.Point(700, 19);
+            this.windowListExpand.Location = new System.Drawing.Point(1050, 28);
+            this.windowListExpand.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.windowListExpand.Name = "windowListExpand";
-            this.windowListExpand.Size = new System.Drawing.Size(75, 23);
+            this.windowListExpand.Size = new System.Drawing.Size(112, 34);
             this.windowListExpand.TabIndex = 9;
             this.windowListExpand.Text = "展开全部";
             this.windowListExpand.UseVisualStyleBackColor = true;
@@ -140,9 +151,10 @@ namespace ConfigWindow
             // 
             // configListExpand
             // 
-            this.configListExpand.Location = new System.Drawing.Point(192, 19);
+            this.configListExpand.Location = new System.Drawing.Point(288, 28);
+            this.configListExpand.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.configListExpand.Name = "configListExpand";
-            this.configListExpand.Size = new System.Drawing.Size(75, 23);
+            this.configListExpand.Size = new System.Drawing.Size(112, 34);
             this.configListExpand.TabIndex = 10;
             this.configListExpand.Text = "展开全部";
             this.configListExpand.UseVisualStyleBackColor = true;
@@ -150,9 +162,10 @@ namespace ConfigWindow
             // 
             // addConfigBtn
             // 
-            this.addConfigBtn.Location = new System.Drawing.Point(109, 415);
+            this.addConfigBtn.Location = new System.Drawing.Point(164, 622);
+            this.addConfigBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.addConfigBtn.Name = "addConfigBtn";
-            this.addConfigBtn.Size = new System.Drawing.Size(75, 23);
+            this.addConfigBtn.Size = new System.Drawing.Size(112, 34);
             this.addConfigBtn.TabIndex = 11;
             this.addConfigBtn.Text = "添加配置";
             this.addConfigBtn.UseVisualStyleBackColor = true;
@@ -160,9 +173,10 @@ namespace ConfigWindow
             // 
             // saveConfigBtn
             // 
-            this.saveConfigBtn.Location = new System.Drawing.Point(190, 415);
+            this.saveConfigBtn.Location = new System.Drawing.Point(285, 622);
+            this.saveConfigBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.saveConfigBtn.Name = "saveConfigBtn";
-            this.saveConfigBtn.Size = new System.Drawing.Size(75, 23);
+            this.saveConfigBtn.Size = new System.Drawing.Size(112, 34);
             this.saveConfigBtn.TabIndex = 12;
             this.saveConfigBtn.Text = "保存配置";
             this.saveConfigBtn.UseVisualStyleBackColor = true;
@@ -170,9 +184,9 @@ namespace ConfigWindow
             // 
             // SetWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1200, 675);
             this.Controls.Add(this.saveConfigBtn);
             this.Controls.Add(this.addConfigBtn);
             this.Controls.Add(this.configListExpand);
@@ -186,6 +200,8 @@ namespace ConfigWindow
             this.Controls.Add(this.SetWindowBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.configList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "SetWindow";
             this.Text = "SetWindow";
             this.ResumeLayout(false);
