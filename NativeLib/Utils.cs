@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using static NativeLib.User32;
 
 namespace NativeLib
 {
@@ -17,6 +18,42 @@ namespace NativeLib
         const string emptyXml = "<?xml version=\"1.0\" encoding=\"utf-8\" ?><configs></configs>";
 
         public static List<IntPtr> findWindows(string name)
+        {
+            List<IntPtr> windows = new List<IntPtr>();
+
+            // 定义回调函数
+            EnumWindowsProc callback = (hWnd, lParam) =>
+            {
+                if (User32.IsWindow(hWnd) && User32.IsWindowVisible(hWnd))
+                {
+                    var winProc = User32.GetWindowThreadProcessId(hWnd);
+                    var process = Process.GetProcessById(winProc);
+                    if (process != null && process.ProcessName.Equals(name))
+                    {
+                        windows.Add(hWnd);
+                    }
+                }
+                return true;
+            };
+            User32.EnumWindows(callback, 0);
+            
+
+            foreach (var winptr in windows)
+            {
+
+                if (User32.IsWindow(winptr))
+                {
+                    if (!windows.Contains(winptr))
+                    {
+                        windows.Add(winptr);
+                    }
+                }
+                
+            }
+            return windows;
+        }
+
+        public static List<IntPtr> findWindowsByProc(string name)
         {
             Process[] processes = Process.GetProcessesByName(name);
             if (processes.Length < 1)
@@ -35,9 +72,9 @@ namespace NativeLib
                 }
 
                 var subWindows = User32.EnumWindows(proc.Id);
-              
+
                 windows.AddRange(subWindows);
-                
+
             }
             return windows;
         }

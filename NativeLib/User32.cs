@@ -174,16 +174,15 @@ namespace NativeLib
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumThreadWindows(int dwThreadId, EnumThreadProc lpfn, IntPtr lParam);
+        public static extern bool EnumThreadWindows(int dwThreadId, EnumWindowsProc lpfn, IntPtr lParam);
 
-        public delegate bool EnumThreadProc(IntPtr hWnd, IntPtr lParam);
 
         public static List<IntPtr> EnumWindows(int threadId)
         {
             List<IntPtr> ptrs = new List<IntPtr>();
 
             // 定义回调函数
-            EnumThreadProc callback = (hWnd, lParam) =>
+            EnumWindowsProc callback = (hWnd, lParam) =>
             {
                 ptrs.Add((IntPtr)hWnd.ToInt32());
                 return true;
