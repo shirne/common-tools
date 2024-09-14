@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ConfigWindow
 {
@@ -22,9 +23,9 @@ namespace ConfigWindow
             this.args = args;
             InitializeComponent();
             loadConfigs();
-            foreach(string arg in args)
+            foreach (string arg in args)
             {
-                if("--apply".Equals(arg))
+                if ("--apply".Equals(arg))
                 {
                     DoSetWindow();
                 }
@@ -93,8 +94,8 @@ namespace ConfigWindow
                     }
                     else if (wins.Count > 1)
                     {
-                        configList.Nodes[count].Text = item.processName + "-" + " found "+ wins.Count + " windows";
-                        foreach(IntPtr win in wins)
+                        configList.Nodes[count].Text = item.processName + "-" + " found " + wins.Count + " windows";
+                        foreach (IntPtr win in wins)
                         {
                             if (User32.MoveWindow(win, item.left, item.top, item.width, item.height, 1))
                             {
@@ -125,12 +126,12 @@ namespace ConfigWindow
 
         private string getRect(RECT rect)
         {
-            return rect.Left + "," + rect.Top + "/" + (rect.Right-rect.Left) + "," + (rect.Bottom-rect.Top);
+            return rect.Left + "," + rect.Top + "/" + (rect.Right - rect.Left) + "," + (rect.Bottom - rect.Top);
         }
 
         private TreeNode rectNode(RECT rect, String prefix)
         {
-            var node = new TreeNode(prefix+":"+getRect(rect));
+            var node = new TreeNode(prefix + ":" + getRect(rect));
             node.Nodes.Add(new TreeNode("Left:" + rect.Left));
             node.Nodes.Add(new TreeNode("Top:" + rect.Top));
             node.Nodes.Add(new TreeNode("Right:" + rect.Right));
@@ -140,13 +141,13 @@ namespace ConfigWindow
         private TreeNode styleNode(uint style, String prefix)
         {
             var node = new TreeNode(prefix + ": 0x" + style.ToString("X"));
-            if(windowStyles == null)
+            if (windowStyles == null)
             {
                 windowStyles = Utils.WindowStyles();
             }
             foreach (var keyvalue in windowStyles)
             {
-                if((style & keyvalue.Value) == keyvalue.Value)
+                if ((style & keyvalue.Value) == keyvalue.Value)
                 {
                     node.Nodes.Add(new TreeNode(keyvalue.Key));
                 }
@@ -156,7 +157,7 @@ namespace ConfigWindow
 
         private TreeNode processNode(int processId)
         {
-            var node = new TreeNode("Process: "+ processId);
+            var node = new TreeNode("Process: " + processId);
             node.Tag = processId;
             node.Nodes.Add("...");
             return node;
@@ -180,9 +181,9 @@ namespace ConfigWindow
         TreeNode inVisibleWindows;
         private bool EnumWindows(IntPtr win, int lParam)
         {
-           
-            WINDOWINFO info  = User32.GetWindowInfo(win);
-            
+
+            WINDOWINFO info = User32.GetWindowInfo(win);
+
             string title = User32.GetWindowTitle(win);
 
             uint processId = 0;
@@ -191,15 +192,28 @@ namespace ConfigWindow
             StringBuilder className = new StringBuilder(100);
             User32.GetClassName(win, className, 100);
 
-            var node = new TreeNode(info.atomWindowType.ToString() + "-" + title);
+            // var process = Process.GetProcessById(Convert.ToInt32(processId));
+            // "-" + process.ProcessName +
+            var node = new TreeNode(info.atomWindowType.ToString() +  "-" + title);
             node.Tag = win;
             node.Nodes.Add("Status:" + info.dwWindowStatus.ToString());
             node.Nodes.Add(processNode(Convert.ToInt32(processId)));
             node.Nodes.Add("ClassName:" + className.ToString());
             node.Nodes.Add(styleNode(info.dwStyle, "Style"));
-            node.Nodes.Add(rectNode(info.rcClient,"ClientRect" ));
+            node.Nodes.Add(rectNode(info.rcClient, "ClientRect"));
             node.Nodes.Add(rectNode(info.rcClient, "WindowRect"));
-            node.Nodes.Add("Border:" + info.cxWindowBorders+","+info.cyWindowBorders);
+            node.Nodes.Add("Border:" + info.cxWindowBorders + "," + info.cyWindowBorders);
+
+            /*var subWindows = User32.EnumWindows(process.Id);
+            if(subWindows.Count>0)
+            {
+                var subNode = new TreeNode("SubWindows(" + subWindows.Count + ")");
+                node.Nodes.Add(subNode);
+                *//*foreach(var window in subWindows)
+                {
+                    subNode.Nodes.Add(windowNo)
+                }*//*
+            }*/
 
             if (!User32.IsWindowVisible(win))
             {
@@ -217,7 +231,7 @@ namespace ConfigWindow
             displayList.Nodes.Clear();
             foreach (Screen screen in Screen.AllScreens)
             {
-                var node = new TreeNode((screen.Primary?"Primary - ":"")  + screen.DeviceName);
+                var node = new TreeNode((screen.Primary ? "Primary - " : "") + screen.DeviceName);
                 node.Nodes.Add("X:" + screen.Bounds.X);
                 node.Nodes.Add("Y:" + screen.Bounds.Y);
                 node.Nodes.Add("Width:" + screen.Bounds.Width);
@@ -235,7 +249,7 @@ namespace ConfigWindow
         private void displayListExpand_Click(object sender, EventArgs e)
         {
             bool isExpand = displayListExpand.Text.Contains("展开");
-            foreach(TreeNode node in displayList.Nodes)
+            foreach (TreeNode node in displayList.Nodes)
             {
                 if (isExpand)
                 {
@@ -330,7 +344,7 @@ namespace ConfigWindow
             {
                 index = e.Node.Parent.Tag;
             }
-            if(index != null)
+            if (index != null)
             {
                 var add = new Add();
                 add.index = (int)index;
@@ -353,18 +367,18 @@ namespace ConfigWindow
                 if (parts.Length > 1)
                 {
                     int index = -1;
-                    if(int.TryParse(parts[1],out index))
+                    if (int.TryParse(parts[1], out index))
                     {
-                        if(index<0 || index > config.items.Count)
+                        if (index < 0 || index > config.items.Count)
                         {
                             MessageBox.Show("序号错误", "提示", MessageBoxButtons.OK);
                             showConfig();
                             return;
                         }
-                        
+
                         if (parts[0] == "del")
                         {
-                            var result=MessageBox.Show("确定删除 " + config.items[index].processName,"提示", MessageBoxButtons.OKCancel);
+                            var result = MessageBox.Show("确定删除 " + config.items[index].processName, "提示", MessageBoxButtons.OKCancel);
                             if (result == DialogResult.OK)
                             {
                                 config.items.RemoveAt(index);
@@ -380,7 +394,7 @@ namespace ConfigWindow
         private void windowList_AfterExpand(object sender, TreeViewEventArgs e)
         {
             var tag = e.Node.Tag;
-            if(tag is int && e.Node.Nodes.Count == 1)
+            if (tag is int && e.Node.Nodes.Count == 1)
             {
                 var process = Process.GetProcessById((int)tag);
                 e.Node.Nodes.Clear();
@@ -395,16 +409,17 @@ namespace ConfigWindow
         {
             var node = e.Node;
             var tag = node.Tag;
-            while(node.Parent != null && !(tag is IntPtr))
+            while (node.Parent != null && !(tag is IntPtr))
             {
                 node = node.Parent;
                 tag = node.Tag;
             }
             if (tag == null) return;
-            if(tag is IntPtr)
+            if (tag is IntPtr)
             {
                 var processId = User32.GetWindowThreadProcessId((IntPtr)tag);
-                if (processId > 0) {
+                if (processId > 0)
+                {
                     var process = Process.GetProcessById(processId);
                     var add = new Add();
                     add.index = config.items.FindIndex((config) => config.processName == process.ProcessName);
@@ -412,7 +427,7 @@ namespace ConfigWindow
                     add.processName = process.ProcessName;
                     add.left = winInfo.rcClient.Left;
                     add.top = winInfo.rcClient.Top;
-                    add.width = winInfo.rcClient.Right-winInfo.rcClient.Left;
+                    add.width = winInfo.rcClient.Right - winInfo.rcClient.Left;
                     add.height = winInfo.rcClient.Bottom - winInfo.rcClient.Top;
                     add.ShowDialog(this);
                 }

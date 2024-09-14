@@ -33,6 +33,11 @@ namespace NativeLib
                         windows.Add(proc.MainWindowHandle);
                     }
                 }
+
+                var subWindows = User32.EnumWindows(proc.Id);
+              
+                windows.AddRange(subWindows);
+                
             }
             return windows;
         }

@@ -69,7 +69,7 @@ namespace NativeLib
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr UnregisterHotKey(IntPtr hWnd, int id);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern IntPtr SetCursorPos(int x, int y);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -93,13 +93,13 @@ namespace NativeLib
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool IsWindow(IntPtr hWnd);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, int bRepaint);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, int lParam);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool GetWindowInfo(IntPtr hWnd, ref WINDOWINFO pwi);
 
         public static WINDOWINFO GetWindowInfo(IntPtr hWnd)
@@ -171,6 +171,37 @@ namespace NativeLib
 
         [DllImport("user32", EntryPoint = "GetClassNameA", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
         public static extern int GetClassName(IntPtr handleToWindow, StringBuilder className, int maxClassNameLength);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool EnumThreadWindows(int dwThreadId, EnumThreadProc lpfn, IntPtr lParam);
+
+        public delegate bool EnumThreadProc(IntPtr hWnd, IntPtr lParam);
+
+        public static List<IntPtr> EnumWindows(int threadId)
+        {
+            List<IntPtr> ptrs = new List<IntPtr>();
+
+            // 定义回调函数
+            EnumThreadProc callback = (hWnd, lParam) =>
+            {
+                ptrs.Add((IntPtr)hWnd.ToInt32());
+                return true;
+            };
+
+            // 枚举窗口
+            EnumThreadWindows(threadId, callback, IntPtr.Zero);
+
+            return ptrs;
+        }
+
+
+        [DllImport("Kernel32.dll")]
+        public static extern int GetLastError();
+
+
+        [DllImport("Kernel32.dll")]
+        public static extern int SetLastError(int dwErrCode);
 
     }
 }

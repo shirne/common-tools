@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -109,34 +110,42 @@ namespace ConfigWindow
 
         private void queryBtn_Click(object sender, EventArgs e)
         {
+            User32.SetLastError(0);
             var name = processNameInput.Text.Trim();
             var wins = Utils.findWindows(name);
             if (wins == null)
             {
-                queryLabel.Text = "未查询到进程";
+                loggerBox.AppendText("未查询到进程\n");
                 return;
             }
 
             if (wins.Count < 1)
             {
-                queryLabel.Text = "未查询到窗口";
+                loggerBox.AppendText("未查询到窗口\n");
             }
             else
             {
                 if (wins.Count > 1)
                 {
-                    queryLabel.Text = "查询到多个窗口";
+                    loggerBox.AppendText("查询到多个窗口\n");
                     foreach (IntPtr win in wins)
                     {
                         string title = User32.GetWindowTitle(win);
-                        queryLabel.Text += " \"" + title + "\"" + (User32.IsWindowVisible(win) ? "已显示" : "未显示") + " ";
+
+                        loggerBox.AppendText(title + "[" + (User32.IsWindowVisible(win) ? "已显示" : "未显示") + "]\n");
                     }
                 }
                 else
                 {
                     string title = User32.GetWindowTitle(wins[0]);
-                    queryLabel.Text = "查询到窗口\"" + title + "\"" + (User32.IsWindowVisible(wins[0]) ? "已显示" : "未显示");
+                    loggerBox.AppendText("查询到窗口" + title + "[" + (User32.IsWindowVisible(wins[0]) ? "已显示" : "未显示") + "]\n");
                 }
+            }
+            var error = Marshal.GetLastWin32Error();
+            if (error != 0)
+            {
+                string errorMessage = new Win32Exception(error).Message;
+                loggerBox.AppendText("发生错误：" + error.ToString() + ":" + errorMessage + "\n");
             }
         }
 
@@ -144,21 +153,22 @@ namespace ConfigWindow
         {
             if (GetInput())
             {
+                User32.SetLastError(0);
                 var wins = Utils.findWindows(processName);
                 if (wins == null)
                 {
-                    queryLabel.Text = "未查询到进程";
+                    loggerBox.AppendText("未查询到进程\n");
                     return;
                 }
                 if (wins.Count < 1)
                 {
-                    queryLabel.Text = "未查询到窗口";
+                    loggerBox.AppendText("未查询到窗口\n");
                 }
                 else
                 {
                     if (wins.Count > 1)
                     {
-                        queryLabel.Text = "查询到多个窗口";
+                        loggerBox.AppendText("查询到多个窗口\n");
                         foreach (IntPtr win in wins)
                         {
                             string stitle = User32.GetWindowTitle(win);
@@ -166,17 +176,27 @@ namespace ConfigWindow
                             var isVisible = User32.IsWindowVisible(win);
 
                             var moved = User32.MoveWindow(win, left, top, width, height, 1);
-                            errorLabel.Text = " \"" + stitle + "\"" + (isVisible ? "已显示" : "未显示") + (moved ? "已设置" : "未设置") + "/";
+
+                            loggerBox.AppendText(stitle + "[" + (isVisible ? "已显示" : "未显示") + "][" + (moved ? "已设置" : "未设置") + "]\n");
                         }
                     }
                     else
                     {
                         string title = User32.GetWindowTitle(wins[0]);
                         var isVisible = User32.IsWindowVisible(wins[0]);
-
+                        var wininfo = User32.GetWindowInfo(wins[0]);
+                        var oldPosition = wininfo.rcClient.Top + "," + wininfo.rcClient.Left + "," + (wininfo.rcClient.Right - wininfo.rcClient.Left) + "," + (wininfo.rcClient.Bottom - wininfo.rcClient.Top);
                         var moved = User32.MoveWindow(wins[0], left, top, width, height, 1);
-                        errorLabel.Text = "查询到窗口\"" + title + "\"" + (isVisible ? "已显示" : "未显示") + (moved ? "已设置" : "未设置");
+
+                        loggerBox.AppendText("查询到窗口" + title + "(" + oldPosition + ")[" + (isVisible ? "已显示" : "未显示") + "][" + (moved ? "已设置" : "未设置") + "]\n");
                     }
+                    var error = Marshal.GetLastWin32Error();
+                    if (error != 0)
+                    {
+                        string errorMessage = new Win32Exception(error).Message;
+                        loggerBox.AppendText("发生错误：" + error.ToString() + ":" + errorMessage + "\n");
+                    }
+
                 }
             }
         }

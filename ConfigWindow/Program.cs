@@ -36,6 +36,7 @@ namespace ConfigWindow
         {
             foreach (ItemConfig item in config.items)
             {
+
                 var wins = Utils.findWindows(item.processName);
                 if (wins == null)
                 {
@@ -43,18 +44,22 @@ namespace ConfigWindow
                 }
                 else
                 {
+                    Console.WriteLine(item.processName + ": found " + wins.Count + " windows");
                     if (wins.Count < 1)
                     {
                         Console.WriteLine(item.processName + ": not found any window");
                     }
-                    else
-                    if (wins.Count > 1)
+                    else if (wins.Count > 1)
                     {
                         foreach (IntPtr win in wins)
                         {
                             if (User32.MoveWindow(win, item.left, item.top, item.width, item.height, 1))
                             {
                                 Console.WriteLine(item.processName + "-" + "positioned");
+                            }
+                            else
+                            {
+                                Console.WriteLine(item.processName + "-" + "positioned failed");
                             }
                         }
                     }
@@ -63,6 +68,10 @@ namespace ConfigWindow
                         if (User32.MoveWindow(wins[0], item.left, item.top, item.width, item.height, 1))
                         {
                             Console.WriteLine(item.processName + "-" + "positioned");
+                        }
+                        else
+                        {
+                            Console.WriteLine(item.processName + "-" + "positioned failed");
                         }
                     }
                 }
